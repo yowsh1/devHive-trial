@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+</head>
+<body>
+    <h1>Users</h1>
+    <button onclick="fetchUsers()">Load Users</button>
+    <ul id="usersList"></ul>
+
+    <h2>Add User</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="email" id="email" placeholder="Email">
+    <button onclick="addUser()">Add User</button>
+
+    <script>
+        async function fetchUsers() {
+            const response = await fetch("http://localhost:3000/users");
+            const users = await response.json();
+            document.getElementById("usersList").innerHTML = users.map(user => `<li>${user.name} - ${user.email}</li>`).join("");
+        }
+
+        async function addUser() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            await fetch("http://localhost:3000/users", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email })
+            });
+            fetchUsers(); // Reload users list
+        }
+    </script>
+</body>
+</html>
